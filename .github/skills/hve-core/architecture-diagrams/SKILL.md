@@ -7,7 +7,7 @@ compatibility: "Works in any chat context where the caller needs an ASCII or Mer
 metadata:
   authors: "microsoft/hve-core"
   spec_version: "1.0"
-  last_updated: "2026-06-19"
+  last_updated: "2026-08-07"
 ---
 
 # Architecture Diagrams Skill
@@ -15,6 +15,8 @@ metadata:
 ## Purpose
 
 Use this skill to turn infrastructure source files into readable architecture diagrams for reviews, ADRs, and design discussions. The skill is optimized for cloud systems and assumes the primary inputs are Terraform, Bicep, ARM templates, shell scripts, Kubernetes manifests, and Docker/Compose files. It focuses on structure, relationships, and boundary clarity rather than rendered graphics.
+
+This skill documents infrastructure topology. To document a software system, meaning its containers, its components, and the people and systems around it, use the `c4-architecture` skill instead.
 
 ## Output Format
 

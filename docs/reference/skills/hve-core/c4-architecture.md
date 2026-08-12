@@ -2,7 +2,7 @@
 title: c4-architecture
 description: "Model and document existing or planned software architectures with the C4 model across System Context, Container, and Component levels plus deployment diagrams, then emit diagrams through a selected renderer. Use when an architect needs audience-appropriate software architecture documentation; use the 'architecture-diagrams' skill for infrastructure topology."
 sidebar_position: 2
-ms.date: 2026-08-11
+ms.date: 2026-08-12
 ---
 
 <!-- BEGIN AUTO-GENERATED: metadata -->
@@ -24,7 +24,7 @@ Model and document existing or planned software architectures with the C4 model 
 
 Use it to document how a software system is composed, from either existing code or a planned design. It emits System Context, Container, and Component diagrams by default; Code only on request, and Deployment only when the evidence describes where containers run.
 
-Use `architecture-diagrams` instead for cloud infrastructure topology. Mermaid is the only supported renderer; other renderers stop with a reported limitation.
+Use `architecture-diagrams` instead for cloud infrastructure topology. Requests for an unsupported renderer stop with a reported limitation.
 
 ## Example usage
 
@@ -33,4 +33,4 @@ Use `architecture-diagrams` instead for cloud infrastructure topology. Mermaid i
 including a code-level view of the pricing logic.
 ```
 
-The skill either returns the diagrams with a source-validation and Mermaid CLI status, or stops and asks when ownership or the system boundary is unevidenced. When `mmdc` is on your `PATH` it renders each diagram automatically to catch parse errors.
+The skill either returns the diagrams with source-validation and renderer-specific validation statuses, or stops and asks when the available evidence does not establish ownership or the system boundary.

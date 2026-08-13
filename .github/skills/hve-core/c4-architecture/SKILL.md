@@ -45,7 +45,7 @@ Follow these steps when activating this skill:
 2. Inspect the relevant code and documentation to identify architecture elements, boundaries, relationships, and deployment evidence.
 3. Read and apply the [C4 modelling instructions](references/c4-modelling-instructions.md), including its modelling-uncertainty decision.
 4. When creating new diagrams, identify which diagrams, systems, and levels are required. Ask the user to clarify if unclear from context.
-5. When updating an existing diagram document, read the complete document first and apply only the requested model delta. Preserve unrelated nodes, relationships, comments, layout controls (config blocks, rank-control links, and layout subgraphs), and stable identifiers. Ask the user before removing content whose relevance is uncertain.
+5. When updating an existing diagram document, read the complete document first and apply only the requested model delta. Preserve existing nodes, relationships, comments, layout controls, and stable identifiers unless the requested change affects them. Ask the user before removing content whose relevance is uncertain.
 6. Before responding, validate each created/edited diagram rule by rule against the selected renderer reference and correct every violation.
 
 ## Success Criteria

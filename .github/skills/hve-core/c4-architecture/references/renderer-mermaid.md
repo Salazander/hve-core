@@ -18,7 +18,7 @@ This renderer emits C4 diagrams as Mermaid `flowchart` blocks using C4 conventio
 * Separate label lines with literal newlines. Bold the first line of every element label with `**Name**`. Render the stereotype and technology line as `*[Stereotype]*`, and keep the description line at normal weight.
 * Visible subgraph titles begin with a bold name. A visible subgraph that contains other visible subgraphs uses the one-line form `**Name** *[Stereotype]*`. An innermost visible subgraph, which contains no visible subgraphs, puts `*[Stereotype]*` on the second line.
 * In every relationship label, keep the intent at normal weight. When the relationship technology is supported by evidence, place `*[technology]*` on a second line. When it is unknown, omit the technology line rather than infer or invent a value.
-* Give every element the shape and class for its type. See Element shapes and classes below.
+* Give every element the shape and class for its type. See Element shapes and classes [below](#element-shapes-and-classes).
 * Group `class` assignments by class, one line each, after the relationships.
 * Keep descriptions to one short clause. Long prose belongs in the accompanying element table, not on the node.
 

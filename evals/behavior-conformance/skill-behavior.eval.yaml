@@ -2249,13 +2249,13 @@ stimuli:
       advisory: "true"
     graders:
       - type: output-matches
-        name: skill-attribution
+        name: c4-attribution
         config:
-          pattern: '(?i)(c4|context|container|component|architecture)'
+          pattern: '(?i)\bc4\b'
       - type: output-matches
-        name: scope-language
+        name: level-token
         config:
-          pattern: '(?i)(level|diagram|mermaid|model|software)'
+          pattern: '(?i)(system\s+context|container|component|\bcode\b)'
 
   - name: skill-caveman-knowledge
     prompt: |

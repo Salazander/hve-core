@@ -2,7 +2,7 @@
 title: Mermaid C4 Renderer
 description: Default C4 renderer emitting Mermaid flowchart syntax with C4 conventions
 author: Microsoft
-ms.date: 2026-08-11
+ms.date: 2026-08-13
 ms.topic: reference
 ---
 
@@ -110,12 +110,12 @@ style layout_bottom fill:none,stroke:none
 * Put the system or container under scrutiny in `layout_center`. When it is a visible C4 boundary, nest that boundary inside `layout_center` and use the element's stable id, such as `sys_storefront` or `ctr_order_api`. Put all containers (L2 and deployment diagram) or all components of a container (L3 diagram) inside visible boundaries.
 * Put all callees, invoked dependencies, and external systems in the bottom subgraph `layout_bottom`.
 
-Leverage [Rank Control](#rank-control) to fine-tune element positions and force
-the three horizontal bands to stack vertically in top-center-bottom order.
+Leverage [Rank Control](#rank-control) to fine-tune element positions and force the three horizontal bands to stack vertically in top-center-bottom order.
 
 ## Rank control
 
 Mermaid places a node one rank below the deepest element pointing at it.
+
 To move an element up:
 1. lengthen any of the real outgoing relationship edges starting at the element that needs moving up (preferred).
 2. add or lengthen an invisible dependency from the top element to the bottom element that need to be stacked (fallback).
@@ -131,40 +131,18 @@ To move an element down:
 
 ## Band stacking validation
 
-Validate that `layout_top`, `layout_center`, and `layout_bottom` occupy three
-distinct horizontal bands stacked vertically in top-center-bottom order.
-Elements from adjacent bands must not share or overlap the same vertical rank.
+Validate that `layout_top`, `layout_center`, and `layout_bottom` occupy three distinct horizontal bands stacked vertically in top-center-bottom order. Elements from adjacent bands must not share or overlap the same vertical rank.
 
-When Mermaid rendering tooling is available, render the diagram and inspect the
-rendered positions of the visible descendants of each layout subgraph. The
-lowest visible point in `layout_top` must be above the highest visible point in
-`layout_center`, and the lowest visible point in `layout_center` must be above
-the highest visible point in `layout_bottom`. Treat an overlap, equal vertical
-position, or reversed order as a failed band-stacking check. Do not use the
-hidden layout-subgraph border as the measurement boundary.
+When Mermaid rendering tooling is available, render the diagram and inspect the rendered positions of the visible descendants of each layout subgraph. The lowest visible point in `layout_top` must be above the highest visible point in `layout_center`, and the lowest visible point in `layout_center` must be above the highest visible point in `layout_bottom`. Treat an overlap, equal vertical position, or reversed order as a failed band-stacking check. Do not use the hidden layout-subgraph border as the measurement boundary.
 
-When rendering tooling is unavailable or the user has declined rendering,
-perform static rank analysis:
+When rendering tooling is unavailable or the user has declined rendering, perform static rank analysis:
 
 1. Assign every visible element to its containing layout band.
-2. Treat each directed relationship or invisible dependency as a rank
-    constraint from its source to its target. Use the link length from the
-    [Rank control](#rank-control) table as the minimum rank separation.
-3. Follow the constraints to calculate the earliest possible rank of every
-    element. The greatest rank in `layout_top` must be less than the least rank
-    in `layout_center`, and the greatest rank in `layout_center` must be less
-    than the least rank in `layout_bottom`.
-4. Treat cycles, reverse constraints, disconnected adjacent bands, or any rank
-    result that does not prove both inequalities as a failed band-stacking
-    check.
+2. Treat each directed relationship or invisible dependency as a rank constraint from its source to its target. Use the link length from the [Rank control](#rank-control) table as the minimum rank separation.
+3. Follow the constraints to calculate the earliest possible rank of every element. The greatest rank in `layout_top` must be less than the least rank in `layout_center`, and the greatest rank in `layout_center` must be less than the least rank in `layout_bottom`.
+4. Treat cycles, reverse constraints, disconnected adjacent bands, or any rank result that does not prove both inequalities as a failed band-stacking check.
 
-On failure, apply [Rank control](#rank-control). Prefer lengthening an existing
-real relationship that preserves its architectural meaning. Otherwise add the
-shortest invisible dependency needed between elements in the adjacent bands
-that failed. Repeat rendered validation when tooling is available; otherwise
-repeat static rank analysis. Continue until both band boundaries pass, or
-report source validation as `Failed` when no valid rank control can establish
-the order without misrepresenting a relationship.
+On failure, apply [Rank control](#rank-control). Prefer lengthening an existing real relationship that preserves its architectural meaning. Otherwise add the shortest invisible dependency needed between elements in the adjacent bands that failed. Repeat rendered validation when tooling is available; otherwise repeat static rank analysis. Continue until both band boundaries pass, or report source validation as `Failed` when no valid rank control can establish the order without misrepresenting a relationship.
 
 ## Legend
 
@@ -429,7 +407,14 @@ Stores orders and carts`")]
 
 This is the one level that is not a `flowchart`. Mermaid's `classDiagram` carries its own notation, so the shapes, palette classes, config block, and shared Legend above do not apply here, and the element ids used at Levels 1 through 3 give way to the real names of code constructs.
 
+Each Level 4 diagram drills into one focused Level 3 component. Name that component in the diagram title and verify it appears in its container's Level 3 view before detailing it. Include only the code constructs the evidence attributes to that component and the dependencies that component owns; omit constructs and relationships that belong to other components or that the evidence does not support.
+
+Set the title through a Mermaid frontmatter block placed directly above `classDiagram`: a `---` delimited `title:` line holding a single plain-text value, for example `title: Pricing Engine [Component]`. The title is plain text, so state the stereotype in square brackets.
+
 ```mermaid
+---
+title: Pricing Engine [Component]
+---
 classDiagram
     class PricingEngine {
         +Price(Order order) PriceBreakdown
@@ -466,11 +451,7 @@ classDiagram
 
 ## Supporting Diagram: Deployment
 
-One environment per diagram, and every instance traces back to a container in the Level 2 diagram.
-Each managed service is its own deployment node, so the service is named on the boundary and the instance describes what runs on it.
-Apply the deployment-placement evidence rule from [C4 Modelling instructions](c4-modelling-instructions.md). Preserve every external element's stable ID and role from the Level 2 diagram.
-Place external systems outside deployment-node boundaries unless the evidence explicitly shows that an externally owned system or data store is hosted on a depicted deployment node. In that case, nest the external element directly in the evidenced node while retaining its `ext_` identifier, external stereotype, shape, and class. The deployment boundary communicates physical hosting, not ownership; state the external owner in the element description or accompanying table. When the shared hosting location is uncertain, stop and ask for clarification instead of choosing a placement.
-Deployment nodes MAY append concise, evidence-backed metadata after a colon, such as supported runtimes, region, or SKU, when it applies to the complete node. Generic boundaries carry no metadata.
+One environment per diagram, and every instance traces back to a container in the Level 2 diagram. Each managed service is its own deployment node, so the service is named on the boundary and the instance describes what runs on it. Apply the deployment-placement evidence rule from [C4 Modelling instructions](c4-modelling-instructions.md). Preserve every external element's stable ID and role from the Level 2 diagram. Place external systems outside deployment-node boundaries unless the evidence explicitly shows that an externally owned system or data store is hosted on a depicted deployment node. In that case, nest the external element directly in the evidenced node while retaining its `ext_` identifier, external stereotype, shape, and class. The deployment boundary communicates physical hosting, not ownership; state the external owner in the element description or accompanying table. When the shared hosting location is uncertain, stop and ask for clarification instead of choosing a placement. Deployment nodes may append concise, evidence-backed metadata after a colon, such as supported runtimes, region, or SKU, when it applies to the complete node. Generic boundaries carry no metadata.
 Example diagram:
 
 ```mermaid
@@ -555,36 +536,18 @@ System of record for stock`"]
 
 ## Validation
 
-Self-validate every produced diagram against the syntax and modelling rules in
-this reference. Source validation passes only when every applicable check below
-passes:
+Self-validate every produced diagram against the syntax and modelling rules in this reference. Source validation passes only when every applicable check below passes:
 
-* Every non-Legend flowchart declares `flowchart TB`, the canonical
-    [Legend](#legend) declares `flowchart LR`, and no other diagram uses `LR`.
-    Every diagram containing a `subgraph` opens with the exact
-    [Config block](#config-block).
-* Every identifier follows the type-prefix scheme and stays stable across
-    declarations, relationships, class assignments, styles, and diagram levels.
-* Every element uses the required shape, stereotype, class definition, class
-    assignment, and boundary style.
-* Every visible label and relationship follows the Markdown-string and
-    evidence-backed technology rules.
-* Every relationship is supported by code, configuration, or documentation and
-    follows the direction and cross-level consistency rules.
-* The [Band stacking validation](#band-stacking-validation) passes by rendered
-    position analysis when rendering tooling is available, or by static rank
-    analysis when it is unavailable or rendering was declined.
-* Every deployment instance is inside an evidenced execution environment, and
-    every co-hosted external element follows the deployment exception above.
-* Every emitted Legend block exactly matches the canonical [Legend](#legend),
-    including every node, visible label, layout link, class definition, class
-    assignment, and style statement.
+* Every non-Legend flowchart declares `flowchart TB`, the canonical [Legend](#legend) declares `flowchart LR`, and no other diagram uses `LR`. Every diagram containing a `subgraph` opens with the exact [Config block](#config-block).
+* Every identifier follows the type-prefix scheme and stays stable across declarations, relationships, class assignments, styles, and diagram levels.
+* Every element uses the required shape, stereotype, class definition, class assignment, and boundary style.
+* Every visible label and relationship follows the Markdown-string and evidence-backed technology rules.
+* Every relationship is supported by code, configuration, or documentation and follows the direction and cross-level consistency rules.
+* The [Band stacking validation](#band-stacking-validation) passes by rendered position analysis when rendering tooling is available, or by static rank analysis when it is unavailable or rendering was declined.
+* Every deployment instance is inside an evidenced execution environment, and every co-hosted external element follows the deployment exception above.
+* Every emitted Legend block exactly matches the canonical [Legend](#legend), including every node, visible label, layout link, class definition, class assignment, and style statement.
 
-When any check fails, correct the source and repeat the complete checklist. If
-the failure cannot be corrected from the available evidence, report source
-validation as `Failed`, identify the failed rule, and follow the skill's missing
-evidence stop behavior. Never report source validation as `Passed` while an
-applicable check is unresolved.
+When any check fails, correct the source and repeat the complete checklist. If the failure cannot be corrected from the available evidence, report source validation as `Failed`, identify the failed rule, and follow the skill's missing evidence stop behavior. Never report source validation as `Passed` while an applicable check is unresolved.
 
 Resolve Mermaid CLI render validation in this order, stopping at the first step that applies:
 
@@ -606,6 +569,6 @@ Report the two validation methods separately:
 
 ## Sources
 
-* [C4 Model](https://c4model.com/)
+* [C4 Model](https://c4model.com/) — © Simon Brown, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Concepts paraphrased with attribution; not reproduced verbatim.
 * [Mermaid flowcharts](https://mermaid.js.org/syntax/flowchart.html)
-* [Mermaid class diagrams](https://mermaid.js.org/syntax/classDiagram.html)
+* [Mermaid class diagrams](https://mermaid.js.org/syntax/classDiagram.html) — Mermaid documentation, [MIT](https://github.com/mermaid-js/mermaid/blob/develop/LICENSE). Syntax conventions paraphrased; keywords and identifiers are facts, not licensed prose.

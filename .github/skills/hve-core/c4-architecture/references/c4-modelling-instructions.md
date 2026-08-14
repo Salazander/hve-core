@@ -2,7 +2,7 @@
 title: C4 Modelling instructions
 description: C4 Modelling instructions
 author: Microsoft
-ms.date: 2026-08-13
+ms.date: 2026-08-14
 ms.topic: reference
 ---
 
@@ -56,6 +56,8 @@ Create a component relationship only when code, configuration, or documentation 
 ## Edge direction rule
 
 Every arrow starts at the **initiator** (the actor, system, container, or component that begins the interaction or owns the dependency) and points to the **dependency** (the thing being called, consumed, or relied upon). Direction encodes "who depends on whom".
+
+Write edge labels in the active voice, naming what the initiator does to the dependency (for example, "loads and executes", "reads from", "publishes to"). Treat a passive-voice label (for example, "is loaded by", "are executed by", "is published by") as a red flag that the arrow may point the wrong way: passive voice hides the initiator and usually means the true initiator is the element the arrow points at. When a relationship reads naturally only in the passive voice, re-check which element begins the interaction, and reverse the edge when the active-voice reading names the other element as the initiator.
 
 ## Cross-level role consistency rule
 

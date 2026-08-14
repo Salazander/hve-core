@@ -2,7 +2,7 @@
 title: Mermaid C4 Renderer
 description: Default C4 renderer emitting Mermaid flowchart syntax with C4 conventions
 author: Microsoft
-ms.date: 2026-08-13
+ms.date: 2026-08-14
 ms.topic: reference
 ---
 
@@ -105,10 +105,10 @@ style layout_bottom fill:none,stroke:none
 
 ## 3-Bands-Layout
 
-* Use three layout-only subgraphs: `layout_top`, `layout_center`, and `layout_bottom`. They use a blank title and carry no C4 stereotype or metadata.
+* Use `layout_top`, `layout_center`, and `layout_bottom` layout-only subgraphs. They use a blank title and carry no C4 stereotype or metadata. Include `layout_bottom` only when the in-focus element has callees or dependencies; otherwise omit it (see the last bullet).
 * Put all invoking callers, clients, users, systems, and containers in `layout_top`.
 * Put the system or container under scrutiny in `layout_center`. When it is a visible C4 boundary, nest that boundary inside `layout_center` and use the element's stable id, such as `sys_storefront` or `ctr_order_api`. Put all containers (L2 and deployment diagram) or all components of a container (L3 diagram) inside visible boundaries.
-* Put all callees, invoked dependencies, and external systems in the bottom subgraph `layout_bottom`.
+* Put all callees, invoked dependencies, and external systems in the bottom subgraph `layout_bottom`. When the in-focus element has no callees or dependencies among the diagram's elements, leave the bottom band empty by omitting `layout_bottom` rather than rendering an empty subgraph; do not invent a callee, and do not introduce a lower-level element absent from the owning higher level, just to fill it.
 
 Leverage [Rank Control](#rank-control) to fine-tune element positions and force the three horizontal bands to stack vertically in top-center-bottom order.
 
@@ -131,16 +131,16 @@ To move an element down:
 
 ## Band stacking validation
 
-Validate that `layout_top`, `layout_center`, and `layout_bottom` occupy three distinct horizontal bands stacked vertically in top-center-bottom order. Elements from adjacent bands must not share or overlap the same vertical rank.
+Validate that the populated layout bands (`layout_top`, `layout_center`, and, when present, `layout_bottom`) occupy distinct horizontal bands stacked vertically in top-center-bottom order. Elements from adjacent bands must not share or overlap the same vertical rank. When the in-focus element has no callees or dependencies, `layout_bottom` is omitted (see [3-Bands-Layout](#3-bands-layout)); validate only the boundaries between the bands that are present.
 
-When Mermaid rendering tooling is available, render the diagram and inspect the rendered positions of the visible descendants of each layout subgraph. The lowest visible point in `layout_top` must be above the highest visible point in `layout_center`, and the lowest visible point in `layout_center` must be above the highest visible point in `layout_bottom`. Treat an overlap, equal vertical position, or reversed order as a failed band-stacking check. Do not use the hidden layout-subgraph border as the measurement boundary.
+When Mermaid rendering tooling is available, render the diagram and inspect the rendered positions of the visible descendants of each layout subgraph. The lowest visible point in `layout_top` must be above the highest visible point in `layout_center`, and, when `layout_bottom` is present, the lowest visible point in `layout_center` must be above the highest visible point in `layout_bottom`. Treat an overlap, equal vertical position, or reversed order as a failed band-stacking check. Do not use the hidden layout-subgraph border as the measurement boundary.
 
 When rendering tooling is unavailable or the user has declined rendering, perform static rank analysis:
 
 1. Assign every visible element to its containing layout band.
 2. Treat each directed relationship or invisible dependency as a rank constraint from its source to its target. Use the link length from the [Rank control](#rank-control) table as the minimum rank separation.
-3. Follow the constraints to calculate the earliest possible rank of every element. The greatest rank in `layout_top` must be less than the least rank in `layout_center`, and the greatest rank in `layout_center` must be less than the least rank in `layout_bottom`.
-4. Treat cycles, reverse constraints, disconnected adjacent bands, or any rank result that does not prove both inequalities as a failed band-stacking check.
+3. Follow the constraints to calculate the earliest possible rank of every element. The greatest rank in `layout_top` must be less than the least rank in `layout_center`, and, when `layout_bottom` is present, the greatest rank in `layout_center` must be less than the least rank in `layout_bottom`.
+4. Treat cycles, reverse constraints, disconnected populated adjacent bands, or any rank result that does not prove the applicable inequalities as a failed band-stacking check. An intentionally omitted `layout_bottom` (the in-focus element has no callees or dependencies) is not a disconnected-band failure.
 
 On failure, apply [Rank control](#rank-control). Prefer lengthening an existing real relationship that preserves its architectural meaning. Otherwise add the shortest invisible dependency needed between elements in the adjacent bands that failed. Repeat rendered validation when tooling is available; otherwise repeat static rank analysis. Continue until both band boundaries pass, or report source validation as `Failed` when no valid rank control can establish the order without misrepresenting a relationship.
 

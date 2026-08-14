@@ -541,6 +541,7 @@ Self-validate every produced diagram against the syntax and modelling rules in t
 * Every non-Legend flowchart declares `flowchart TB`, the canonical [Legend](#legend) declares `flowchart LR`, and no other diagram uses `LR`. Every diagram containing a `subgraph` opens with the exact [Config block](#config-block).
 * Every identifier follows the type-prefix scheme and stays stable across declarations, relationships, class assignments, styles, and diagram levels.
 * Every element uses the required shape, stereotype, class definition, class assignment, and boundary style.
+* Class and style coverage: enumerate every declared node id and confirm each appears in exactly one `class` statement, or, for a boundary or deployment subgraph, exactly one `style` statement. Confirm every id used in a `class` or `style` statement is declared.
 * Every visible label and relationship follows the Markdown-string and evidence-backed technology rules.
 * Every relationship is supported by code, configuration, or documentation and follows the direction and cross-level consistency rules.
 * The [Band stacking validation](#band-stacking-validation) passes by rendered position analysis when rendering tooling is available, or by static rank analysis when it is unavailable or rendering was declined.

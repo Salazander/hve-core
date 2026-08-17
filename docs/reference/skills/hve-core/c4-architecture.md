@@ -2,7 +2,13 @@
 title: c4-architecture
 description: "Model and document existing or planned software architectures with the C4 model across System Context, Container, and Component levels plus deployment diagrams, then emit diagrams through a selected renderer. Use when an architect needs audience-appropriate software architecture documentation; use the 'architecture-diagrams' skill for infrastructure topology."
 sidebar_position: 2
-ms.date: 2026-08-12
+author: Microsoft
+ms.date: 2026-08-17
+ms.topic: reference
+keywords:
+  - skill
+  - hve-core
+  - c4-architecture
 ---
 
 <!-- BEGIN AUTO-GENERATED: metadata -->

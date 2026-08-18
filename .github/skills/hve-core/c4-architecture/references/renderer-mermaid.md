@@ -2,7 +2,7 @@
 title: Mermaid C4 Renderer
 description: Default C4 renderer emitting Mermaid flowchart syntax with C4 conventions
 author: Microsoft
-ms.date: 2026-08-14
+ms.date: 2026-08-18
 ms.topic: reference
 ---
 
@@ -538,7 +538,8 @@ System of record for stock`"]
 
 Self-validate every produced diagram against the syntax and modelling rules in this reference. Source validation passes only when every applicable check below passes:
 
-* Every non-Legend flowchart declares `flowchart TB`, the canonical [Legend](#legend) declares `flowchart LR`, and no other diagram uses `LR`. Every diagram containing a `subgraph` opens with the exact [Config block](#config-block).
+* Every Level 1, Level 2, Level 3, and deployment diagram declares `flowchart TB`. The canonical [Legend](#legend) declares `flowchart LR`, and no other diagram uses `LR`. Every flowchart containing a `subgraph` opens with the exact [Config block](#config-block).
+* In every Level 1, Level 2, Level 3, and deployment diagram, omit `direction` declarations from all subgraphs (for example, `direction LR`) so the parent `flowchart TB` controls the three-band layout.
 * Every identifier follows the type-prefix scheme and stays stable across declarations, relationships, class assignments, styles, and diagram levels.
 * Every element uses the required shape, stereotype, class definition, class assignment, and boundary style.
 * Class and style coverage: enumerate every declared node id and confirm each appears in exactly one `class` statement, or, for a boundary or deployment subgraph, exactly one `style` statement. Confirm every id used in a `class` or `style` statement is declared.
@@ -564,6 +565,7 @@ Report the two validation methods separately:
 ## Limitations
 
 * Mermaid has no native legend construct, so the key is a separate diagram built from the same shapes and classes. It states the notation but cannot be attached to the diagrams it describes, so a level diagram copied out of this document arrives without it.
+* Support for `direction LR` inside a subgraph of a `flowchart TB` varies across Mermaid renderers. Some renderers ignore or incorrectly render the nested direction, so this renderer omits subgraph `direction` declarations and uses rank control to preserve the three-band layout.
 * Mermaid fixes subgraph titles at the top of their boundaries. A multiline Markdown title is left-aligned, and Mermaid provides no per-subgraph title position or margin control.
 * `subGraphTitleMargin` applies to every subgraph in a diagram. With the default Dagre renderer, its spacing is not reliable for recursively nested clusters whose descendants have relationships crossing cluster boundaries. Nested titles can therefore overlap despite the configured margin.
 * This renderer reduces title collisions by using one-line titles for boundaries that contain visible subgraphs and two-line titles only for boundaries that directly contain elements. This convention cannot guarantee collision-free output for every nested topology.
